@@ -66,3 +66,5 @@ class  Blockchain(object):
 	def last_block(self):
 
 		pass
+
+# https://hackernoon.com/learn-blockchains-by-building-one-117428612f46
