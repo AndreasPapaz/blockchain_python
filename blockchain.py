@@ -51,11 +51,11 @@ class Blockchain(object):
     @staticmethod
     def valid_proof(last_proof, proof):
         #validates the proof: does has contain 3 leading zeros?
-        guess = f'{last_proof}{proof}'.enocde()
+        guess = f'{last_proof}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
-
         return guess_hash[:4] == "0000"
 
+    @staticmethod
     def hash(block):
         #hashes a block by creating a SHA-256 hash of a block
         block_string = json.dumps(block, sort_keys=True).encode()
