@@ -108,20 +108,26 @@ def mine():
 
     #we must recieve a reward for finding the proof
 
-@app.route('/transactions/new', methods=["POST"])
+
+@app.route('/transactions/new', methods=['POST'])
 def new_transaction():
     values = request.get_json()
 
-    #check that the required fields are in the posted data
+    print('==============')
+    print(values)
+    print('==============')
+
+    # Check that the required fields are in the POST'ed data
     required = ['sender', 'recipient', 'amount']
     if not all(k in values for k in required):
         return 'Missing values', 400
 
-    #create a new transaction
+    # Create a new Transaction
     index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
 
     response = {'message': f'Transaction will be added to Block {index}'}
     return jsonify(response), 201
+
 
 app.route('/chain', methods=["GET"])
 def full_chain():
