@@ -20,6 +20,7 @@ class Blockchain(object):
         block = {
             'index': len(self.chain) + 1,
             'timestamp': self.currnet_transactions,
+            'transactions': self.currnet_transactions,
             'proof': proof,
             'previous_hash': previous_hash or self.hash(self.chain[-1]),
         }
@@ -40,6 +41,19 @@ class Blockchain(object):
 
         return self.last_block['index'] + 1
 
+
+    @property
+    def last_block(self):
+        #returns the last block in the chain
+        return self.chain[-1]
+
+
+    @staticmethod
+    def hash(block):
+        #hashes a block by creating a SHA-256 hash of a block
+        block_string = json.dumps(block, sort_keys=True).encode()
+        return hashlib.sha256(block_string).hexdigest()
+
     def proof_of_work(self, last_proof):
         #simple proof of work algorithm
         proof = 0
@@ -48,23 +62,13 @@ class Blockchain(object):
 
         return proof
 
+
     @staticmethod
     def valid_proof(last_proof, proof):
         #validates the proof: does has contain 3 leading zeros?
         guess = f'{last_proof}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:4] == "0000"
-
-    @staticmethod
-    def hash(block):
-        #hashes a block by creating a SHA-256 hash of a block
-        block_string = json.dumps(block, sort_keys=True).encode()
-
-
-    @property
-    def last_block(self):
-        #returns the last block in the chain
-        return self.chain[-1]
 
 
 #instantiate our Node
@@ -93,8 +97,9 @@ def mine():
     block = blockchain.new_block(proof)
 
     response = {
-        'message': 'New Block Forged',
+        'message': "New Block Forged",
         'index': block['index'],
+        'transactions': block['transactions'],
         'proof': block['proof'],
         'previous_hash': block['previous_hash'],
     }
@@ -105,7 +110,7 @@ def mine():
 
 @app.route('/transactions/new', methods=["POST"])
 def new_transaction():
-    values - request.get_json()
+    values = request.get_json()
 
     #check that the required fields are in the posted data
     required = ['sender', 'recipient', 'amount']
